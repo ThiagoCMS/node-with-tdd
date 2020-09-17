@@ -20,9 +20,34 @@ module.exports = {
           res.status(401).json({ message: 'User not found' });
           break;
         default:
-          console.log('error in /login', error.message);
+          console.log('error in userController.login', error.message);
           res.status(500).send();
       }
     }
   },
+  async store(req, res) {
+    try {
+      const user = await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+      })
+      res.status(201).json({ message: 'User created successfully' });
+    } catch (error) {
+      switch (error.message) {
+        case 'null value in column "name" violates not-null constraint':
+          res.status(422).json({ message: `Can't create a user without a name` });
+          break
+        case 'null value in column "email" violates not-null constraint':
+          res.status(422).json({ message: `Can't create a user without an email` });
+          break
+        case 'null value in column "hash_password" violates not-null constraint':
+          res.status(422).json({ message: `Can't create a user without a password` });
+          break
+        default:
+          console.log('error in userController.store', error.message);
+          res.status(500).send();
+      }
+    }
+  }
 };

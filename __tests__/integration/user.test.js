@@ -74,4 +74,61 @@ describe('user', () => {
     expect(response.status).toBe(401);
     expect(response.body).toStrictEqual({ message: 'User not found' });
   });
+
+  it('should create a user', async () => {
+    const user = {
+      email: 'contato@thiagomiranda.dev',
+      name: 'Thiago Miranda',
+      password: '123456',
+    };
+
+    const response = await request(app)
+      .post('/user')
+      .send(user);
+
+    expect(response.status).toBe(201);
+    expect(response.body).toStrictEqual({ message: 'User created successfully' });
+  });
+
+  it('should not create a user without name', async () => {
+    const user = {
+      email: 'contato@thiagomiranda.dev',
+      password: '123456',
+    };
+
+    const response = await request(app)
+      .post('/user')
+      .send(user);
+
+    expect(response.status).toBe(422);
+    expect(response.body).toStrictEqual({ message: `Can't create a user without a name` });
+  });
+
+  it('should not create a user without email', async () => {
+    const user = {
+      name: 'Thiago Miranda',
+      password: '123456',
+    };
+
+    const response = await request(app)
+      .post('/user')
+      .send(user);
+
+    expect(response.status).toBe(422);
+    expect(response.body).toStrictEqual({ message: `Can't create a user without an email` });
+  });
+
+  it('should not create a user without password', async () => {
+    const user = {
+      email: 'contato@thiagomiranda.dev',
+      name: 'Thiago Miranda',
+    };
+
+    const response = await request(app)
+      .post('/user')
+      .send(user);
+
+    expect(response.status).toBe(422);
+    expect(response.body).toStrictEqual({ message: `Can't create a user without a password` });
+  });
 });
